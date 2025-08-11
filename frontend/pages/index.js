@@ -300,7 +300,6 @@ export default function Home() {
           )}
         </ul>
         <p style={{ fontStyle: 'italic', color: '#9ca3af', marginTop: 10 }}>
-          Use Postman or backend endpoints to create appointments (quick demo).
         </p>
       </section>
     </div>
