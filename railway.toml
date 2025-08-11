@@ -1,4 +1,0 @@
-[build]
-builder = "Dockerfile"
-root = "backend"
-dockerfilePath = "Dockerfile"
