@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Doctor } from '../entities/doctor.entity';
@@ -12,7 +12,6 @@ export class StaffService {
     @InjectRepository(Appointment) private appointments: Repository<Appointment>,
     @InjectRepository(QueueEntry) private queueRepo: Repository<QueueEntry>,
   ) {
-    // Seed sample doctors on service init if none exist
     (async () => {
       const cnt = await this.doctors.count();
       if (cnt === 0) {
@@ -37,12 +36,8 @@ export class StaffService {
     })();
   }
 
-  // Doctors with filtering support
-  async listDoctors(filters?: {
-    specialization?: string;
-    location?: string;
-    availability?: string;
-  }) {
+  // Doctors with optional filtering
+  async listDoctors(filters?: { specialization?: string; location?: string; availability?: string }) {
     const query = this.doctors.createQueryBuilder('doctor');
 
     if (filters?.specialization) {
@@ -52,7 +47,6 @@ export class StaffService {
       query.andWhere('doctor.location = :location', { location: filters.location });
     }
     if (filters?.availability) {
-      // For MySQL with simple-array storing availability as CSV strings, use LIKE
       query.andWhere('doctor.availability LIKE :availability', { availability: `%${filters.availability}%` });
     }
 
@@ -75,21 +69,60 @@ export class StaffService {
 
   // Appointments
   listAppointments() {
-    return this.appointments.find({ relations: ['doctor'] });
+    // Always return doctor details with appointments
+    return this.appointments.find({
+      relations: ['doctor'],
+      order: { date: 'ASC', timeslot: 'ASC' },
+    });
   }
 
-  createAppointment(a: Partial<Appointment>) {
-    const appointment = this.appointments.create(a);
-    return this.appointments.save(appointment);
+  async createAppointment(a: Partial<Appointment> & { doctorId?: number }) {
+  const doctorId = a.doctorId || a?.doctor?.id;
+
+  if (!doctorId) {
+    throw new BadRequestException('Doctor ID is required for appointment creation');
   }
+  if (!a.date) {
+    throw new BadRequestException('Appointment date is required');
+  }
+  if (!a.timeslot) {
+    throw new BadRequestException('Appointment timeslot is required');
+  }
+
+  const doctorExists = await this.doctors.findOneBy({ id: doctorId });
+  if (!doctorExists) {
+    throw new NotFoundException(`Doctor with ID ${doctorId} not found`);
+  }
+
+  const appointment = this.appointments.create({
+    patientName: a.patientName,
+    phone: a.phone,
+    date: a.date,
+    timeslot: a.timeslot,
+    status: a.status || 'booked',
+    doctor: doctorExists, // assign Doctor entity object
+  });
+
+  return this.appointments.save(appointment);
+}
+
 
   async updateAppointment(id: number, a: Partial<Appointment>) {
+    const appointment = await this.appointments.findOneBy({ id });
+    if (!appointment) {
+      throw new NotFoundException(`Appointment with ID ${id} not found`);
+    }
     await this.appointments.update(id, a);
     return this.appointments.findOne({ where: { id }, relations: ['doctor'] });
   }
 
-  deleteAppointment(id: number) {
-    return this.appointments.delete(id);
+  async deleteAppointment(id: number) {
+    const appointment = await this.appointments.findOneBy({ id });
+    if (!appointment) {
+      throw new NotFoundException(`Appointment with ID ${id} not found`);
+    }
+    await this.appointments.delete(id);
+    return { message: `Appointment ${id} deleted successfully` };
   }
 
   // Queue
@@ -97,11 +130,24 @@ export class StaffService {
     return this.queueRepo.find({ relations: ['doctor'], order: { queueNumber: 'ASC' } });
   }
 
-  async addQueue(q: { patientName: string }) {
-    // Compute next queue number
+  async addQueue(q: { patientName: string; doctorId?: number }) {
     const last = await this.queueRepo.find({ order: { queueNumber: 'DESC' }, take: 1 });
     const next = last.length ? last[0].queueNumber + 1 : 1;
-    const entry = this.queueRepo.create({ queueNumber: next, patientName: q.patientName, status: 'waiting' });
+
+    let doctor: Doctor | null = null;
+    if (q.doctorId) {
+      doctor = await this.doctors.findOneBy({ id: q.doctorId });
+      if (!doctor) {
+        throw new NotFoundException(`Doctor with ID ${q.doctorId} not found`);
+      }
+    }
+
+    const entry = this.queueRepo.create({
+      queueNumber: next,
+      patientName: q.patientName,
+      doctor,
+      status: 'waiting',
+    });
     return this.queueRepo.save(entry);
   }
 
