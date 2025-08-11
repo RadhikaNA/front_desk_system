@@ -1,10 +1,20 @@
 import { useState, useEffect } from 'react';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Home() {
   const [token, setToken] = useState('');
   const [queue, setQueue] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [patientName, setPatientName] = useState('');
+  const [apptPatientName, setApptPatientName] = useState('');
+  const [apptPhone, setApptPhone] = useState('');
+  const [apptTimeslot, setApptTimeslot] = useState('');
+  const [apptDate, setApptDate] = useState(null);
+  const [apptDoctorId, setApptDoctorId] = useState('');
+  const [apptStatus, setApptStatus] = useState('pending');
+
   const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
@@ -12,6 +22,7 @@ export default function Home() {
     if (t) setToken(t);
     fetchQueue(t);
     fetchAppts(t);
+    fetchDoctors(t);
   }, []);
 
   async function login() {
@@ -28,6 +39,7 @@ export default function Home() {
       alert('Logged in as admin (seeded).');
       fetchQueue(j.accessToken);
       fetchAppts(j.accessToken);
+      fetchDoctors(j.accessToken);
     } catch {
       alert('Login failed.');
     }
@@ -36,9 +48,7 @@ export default function Home() {
   async function fetchQueue(authToken = token) {
     try {
       const res = await fetch(api + '/queue', {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
+        headers: { Authorization: `Bearer ${authToken}` },
       });
       if (!res.ok) throw new Error('Failed to fetch queue');
       setQueue(await res.json());
@@ -69,14 +79,24 @@ export default function Home() {
   async function fetchAppts(authToken = token) {
     try {
       const res = await fetch(api + '/appointments', {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
+        headers: { Authorization: `Bearer ${authToken}` },
       });
       if (!res.ok) throw new Error('Failed to fetch appointments');
       setAppointments(await res.json());
     } catch {
       alert('Could not load appointments.');
+    }
+  }
+
+  async function fetchDoctors(authToken = token) {
+    try {
+      const res = await fetch(api + '/doctors', {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      if (!res.ok) throw new Error('Failed to fetch doctors');
+      setDoctors(await res.json());
+    } catch {
+      alert('Could not load doctors.');
     }
   }
 
@@ -97,88 +117,74 @@ export default function Home() {
     }
   }
 
+  async function addAppointment() {
+    if (!apptPatientName || !apptPhone || !apptTimeslot || !apptDoctorId || !apptDate) {
+      return alert('Fill all fields');
+    }
+    try {
+      const formattedDate = apptDate.toISOString().split('T')[0];
+      const res = await fetch(api + '/appointments', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          patientName: apptPatientName,
+          phone: apptPhone,
+          timeslot: apptTimeslot,
+          date: formattedDate,
+          doctorId: Number(apptDoctorId),
+          status: apptStatus,
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to add appointment');
+      setApptPatientName('');
+      setApptPhone('');
+      setApptTimeslot('');
+      setApptDate(null);
+      setApptDoctorId('');
+      setApptStatus('pending');
+      fetchAppts();
+    } catch {
+      alert('Failed to add appointment.');
+    }
+  }
+
+  async function deleteAppointment(id) {
+    if (!confirm('Delete this appointment?')) return;
+    try {
+      const res = await fetch(api + `/appointments/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Failed to delete appointment');
+      fetchAppts();
+    } catch {
+      alert('Failed to delete appointment.');
+    }
+  }
+
   return (
-    <div
-      style={{
-        maxWidth: 700,
-        margin: '30px auto',
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        color: '#333',
-      }}
-    >
+    <div style={{ maxWidth: 900, margin: '30px auto', fontFamily: "'Segoe UI', sans-serif", color: '#333' }}>
       <h1 style={{ textAlign: 'center', color: '#2563eb' }}>Front Desk System — Demo UI</h1>
 
       {!token ? (
-        <button
-          onClick={login}
-          style={{
-            display: 'block',
-            margin: '20px auto',
-            backgroundColor: '#2563eb',
-            color: '#fff',
-            padding: '12px 25px',
-            border: 'none',
-            borderRadius: 6,
-            fontSize: 16,
-            cursor: 'pointer',
-            boxShadow: '0 4px 8px rgba(37, 99, 235, 0.4)',
-            transition: 'background-color 0.3s ease',
-          }}
-          onMouseEnter={e => (e.target.style.backgroundColor = '#1d4ed8')}
-          onMouseLeave={e => (e.target.style.backgroundColor = '#2563eb')}
-        >
+        <button onClick={login} style={{ display: 'block', margin: '20px auto', backgroundColor: '#2563eb', color: '#fff', padding: '12px 25px', border: 'none', borderRadius: 6 }}>
           Auto-login seeded admin
         </button>
       ) : (
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '12px',
-            backgroundColor: '#d1fae5',
-            color: '#065f46',
-            borderRadius: 6,
-            fontWeight: 'bold',
-            boxShadow: '0 2px 5px rgba(6, 95, 70, 0.3)',
-          }}
-        >
+        <div style={{ textAlign: 'center', padding: '12px', backgroundColor: '#d1fae5', color: '#065f46', borderRadius: 6 }}>
           Logged in as Admin
         </div>
       )}
 
+      {/* Queue Section */}
       <section style={{ marginTop: 40 }}>
         <h2 style={{ borderBottom: '2px solid #2563eb', paddingBottom: 8, color: '#2563eb' }}>Queue</h2>
         <div style={{ display: 'flex', gap: 10, marginTop: 15, marginBottom: 20 }}>
-          <input
-            value={patientName}
-            onChange={e => setPatientName(e.target.value)}
-            placeholder="Enter patient name"
-            style={{
-              flexGrow: 1,
-              padding: '10px 14px',
-              fontSize: 16,
-              borderRadius: 6,
-              border: '1.5px solid #ccc',
-              transition: 'border-color 0.2s ease',
-            }}
-            onFocus={e => (e.target.style.borderColor = '#2563eb')}
-            onBlur={e => (e.target.style.borderColor = '#ccc')}
-          />
-          <button
-            onClick={addToQueue}
-            style={{
-              backgroundColor: '#16a34a',
-              color: '#fff',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: 6,
-              fontWeight: '600',
-              cursor: 'pointer',
-              boxShadow: '0 3px 6px rgba(22, 163, 74, 0.4)',
-              transition: 'background-color 0.3s ease',
-            }}
-            onMouseEnter={e => (e.target.style.backgroundColor = '#15803d')}
-            onMouseLeave={e => (e.target.style.backgroundColor = '#16a34a')}
-          >
+          <input value={patientName} onChange={e => setPatientName(e.target.value)} placeholder="Enter patient name" style={{ flexGrow: 1, padding: '10px 14px' }} />
+          <button onClick={addToQueue} style={{ backgroundColor: '#16a34a', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 6 }}>
             Add Walk-in
           </button>
         </div>
@@ -187,40 +193,11 @@ export default function Home() {
             <li style={{ color: '#6b7280', fontStyle: 'italic' }}>No patients in queue</li>
           ) : (
             queue.map(q => (
-              <li
-                key={q.id}
-                style={{
-                  padding: '10px 15px',
-                  marginBottom: 8,
-                  backgroundColor: '#f3f4f6',
-                  borderRadius: 6,
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
+              <li key={q.id} style={{ padding: '10px 15px', backgroundColor: '#f3f4f6', borderRadius: 6, display: 'flex', justifyContent: 'space-between' }}>
                 <span>
                   <strong>#{q.queueNumber}</strong> — {q.patientName}
                 </span>
-                <select
-                  value={q.status}
-                  onChange={e => updateQueueStatus(q.id, e.target.value)}
-                  style={{
-                    fontWeight: '600',
-                    color:
-                      q.status === 'waiting'
-                        ? '#facc15'
-                        : q.status === 'done'
-                        ? '#10b981'
-                        : '#6b7280',
-                    textTransform: 'capitalize',
-                    borderRadius: 4,
-                    border: '1.5px solid #ccc',
-                    padding: '4px 8px',
-                    cursor: 'pointer',
-                  }}
-                >
+                <select value={q.status} onChange={e => updateQueueStatus(q.id, e.target.value)}>
                   <option value="waiting">Waiting</option>
                   <option value="with doctor">With Doctor</option>
                   <option value="done">Done</option>
@@ -231,76 +208,77 @@ export default function Home() {
         </ul>
       </section>
 
+      {/* Appointments Section */}
       <section style={{ marginTop: 50 }}>
         <h2 style={{ borderBottom: '2px solid #2563eb', paddingBottom: 8, color: '#2563eb' }}>Appointments</h2>
-        <button
-          onClick={() => fetchAppts()}
-          style={{
-            marginTop: 15,
-            marginBottom: 15,
-            backgroundColor: '#2563eb',
-            color: '#fff',
-            padding: '8px 16px',
-            border: 'none',
-            borderRadius: 6,
-            cursor: 'pointer',
-            fontWeight: '600',
-            boxShadow: '0 3px 6px rgba(37, 99, 235, 0.4)',
-            transition: 'background-color 0.3s ease',
-          }}
-          onMouseEnter={e => (e.target.style.backgroundColor = '#1e40af')}
-          onMouseLeave={e => (e.target.style.backgroundColor = '#2563eb')}
-        >
-          Refresh
-        </button>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {appointments.length === 0 ? (
-            <li style={{ color: '#6b7280', fontStyle: 'italic' }}>No appointments available</li>
-          ) : (
-            appointments.map(a => (
-              <li
-                key={a.id}
-                style={{
-                  backgroundColor: '#f9fafb',
-                  padding: 12,
-                  borderRadius: 6,
-                  marginBottom: 10,
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontSize: 15,
-                  color: '#374151',
-                }}
-              >
-                <div>
-                  <strong>{a.patientName}</strong> — {a.timeslot} —{' '}
-                  <span
-                    style={{
-                      fontWeight: '600',
-                      color: a.status === 'confirmed' ? '#10b981' : '#f59e0b',
-                      textTransform: 'capitalize',
-                    }}
-                  >
+
+        {/* Add Appointment Form */}
+        <div style={{ display: 'grid', gap: 10, marginTop: 15, marginBottom: 20 }}>
+          <input value={apptPatientName} onChange={e => setApptPatientName(e.target.value)} placeholder="Patient name" />
+          <input value={apptPhone} onChange={e => setApptPhone(e.target.value)} placeholder="Phone number" />
+          <DatePicker
+            selected={apptDate}
+            onChange={date => setApptDate(date)}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select appointment date"
+          />
+          <input value={apptTimeslot} onChange={e => setApptTimeslot(e.target.value)} placeholder="Timeslot (e.g., 10:00 AM)" />
+          <select value={apptDoctorId} onChange={e => setApptDoctorId(e.target.value)}>
+            <option value="">Select Doctor</option>
+            {doctors.map(d => (
+              <option key={d.id} value={d.id}>
+                Dr. {d.name} ({d.specialization})
+              </option>
+            ))}
+          </select>
+          <select value={apptStatus} onChange={e => setApptStatus(e.target.value)}>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+          </select>
+          <button onClick={addAppointment} style={{ backgroundColor: '#2563eb', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: 6 }}>
+            Add Appointment
+          </button>
+        </div>
+
+        {/* Appointment Table */}
+        {appointments.length === 0 ? (
+          <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No appointments available</p>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 20 }}>
+            <thead>
+              <tr style={{ backgroundColor: '#e5e7eb' }}>
+                <th style={{ padding: 10, border: '1px solid #d1d5db' }}>Name</th>
+                <th style={{ padding: 10, border: '1px solid #d1d5db' }}>Phone</th>
+                <th style={{ padding: 10, border: '1px solid #d1d5db' }}>Date</th>
+                <th style={{ padding: 10, border: '1px solid #d1d5db' }}>Timeslot</th>
+                <th style={{ padding: 10, border: '1px solid #d1d5db' }}>Status</th>
+                <th style={{ padding: 10, border: '1px solid #d1d5db' }}>Doctor</th>
+                <th style={{ padding: 10, border: '1px solid #d1d5db' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {appointments.map(a => (
+                <tr key={a.id}>
+                  <td style={{ padding: 10, border: '1px solid #d1d5db' }}>{a.patientName}</td>
+                  <td style={{ padding: 10, border: '1px solid #d1d5db' }}>{a.phone}</td>
+                  <td style={{ padding: 10, border: '1px solid #d1d5db' }}>{a.date}</td>
+                  <td style={{ padding: 10, border: '1px solid #d1d5db' }}>{a.timeslot}</td>
+                  <td style={{ padding: 10, border: '1px solid #d1d5db', fontWeight: '600', color: a.status === 'confirmed' ? '#10b981' : '#f59e0b' }}>
                     {a.status}
-                  </span>{' '}
-                  {a.doctor ? (
-                    <em>
-                      — Dr. {a.doctor.name.replace(/^Dr\.?\s*/i, '')}
-                      {a.doctor.availability?.length > 0 && (
-                        <div style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
-                          Availability: {a.doctor.availability.join(', ')}
-                        </div>
-                      )}
-                    </em>
-                  ) : null}
-                </div>
-              </li>
-            ))
-          )}
-        </ul>
-        <p style={{ fontStyle: 'italic', color: '#9ca3af', marginTop: 10 }}>
-        </p>
+                  </td>
+                  <td style={{ padding: 10, border: '1px solid #d1d5db' }}>
+                    {a.doctor ? `Dr. ${a.doctor.name} (${a.doctor.specialization})` : '—'}
+                  </td>
+                  <td style={{ padding: 10, border: '1px solid #d1d5db' }}>
+                    <button onClick={() => deleteAppointment(a.id)} style={{ backgroundColor: '#dc2626', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 8px' }}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </section>
     </div>
   );
