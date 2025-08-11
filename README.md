@@ -104,4 +104,8 @@ Use Postman or the UI to interact with the system.
 - For quick API testing use Postman to call backend endpoints at http://localhost:3001  
 - The project is intentionally minimal to satisfy assignment requirements; extend it as needed.
 ```
+Snapshots
 
+![Snapshot 3](https://github.com/user-attachments/assets/13f75aa1-a1e3-4979-bca5-1a5291ea94ab)
+![Snapshot 2](https://github.com/user-attachments/assets/17000def-27b4-49ee-8377-40577d790fd6)
+![Snapshot 1](https://github.com/user-attachments/assets/fd861ae0-5c0d-4417-857e-4fe0b0382dec)
