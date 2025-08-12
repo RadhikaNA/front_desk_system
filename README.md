@@ -76,14 +76,6 @@ npm run start:dev
   ```
   http://localhost:3001
   ```
-* The project is intentionally minimal to satisfy assignment requirements — you can extend it as needed.
-
-```
-
-
-```
-
-
 
 ## Notes  
 - Backend seeds a default user: **username: admin**, **password: password123**.  
