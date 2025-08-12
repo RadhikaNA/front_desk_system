@@ -78,12 +78,15 @@ npm run start:dev
   ```
 * The project is intentionally minimal to satisfy assignment requirements; extend it as needed.
 
-Snapshots
+## 📸 Snapshots
 
+### Login Page
 ![WhatsApp Image 2025-08-12 at 11 50 56 AM](https://github.com/user-attachments/assets/8485cd44-9e02-44e8-ad06-cef432b059a0)
 
+### Doctor Management
 ![WhatsApp Image 2025-08-12 at 11 51 37 AM](https://github.com/user-attachments/assets/663aab0b-cb16-457e-a7b2-3c3aeb2ffc6c)
 
+### Queue Management
 ![WhatsApp Image 2025-08-12 at 11 52 13 AM](https://github.com/user-attachments/assets/4d23368f-a3ba-43ba-8d1d-65277090e243)
 
 ![WhatsApp Image 2025-08-12 at 11 53 15 AM](https://github.com/user-attachments/assets/9d65ea91-02cf-494c-8603-1f85ea60b587)
