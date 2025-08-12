@@ -1,4 +1,4 @@
-```
+
 ## Running Backend & Frontend Separately Using XAMPP (No Docker)
 
 1. **Download and extract** the project files to your preferred folder.  
@@ -56,7 +56,7 @@
 - Backend seeds two sample doctors.  
 - For quick API testing use Postman to call backend endpoints at http://localhost:3001  
 - The project is intentionally minimal to satisfy assignment requirements; extend it as needed.
-```
+
 Snapshots
 
 ![WhatsApp Image 2025-08-12 at 11 50 56 AM](https://github.com/user-attachments/assets/8485cd44-9e02-44e8-ad06-cef432b059a0)
