@@ -66,4 +66,9 @@ export class StaffController {
   updateQueue(@Param('id') id, @Body() q) {
     return this.svc.updateQueue(Number(id), q);
   }
+
+  @Delete('queue/:id')
+  deleteQueue(@Param('id') id) {
+    return this.svc.deleteQueue(Number(id));
+  }
 }
