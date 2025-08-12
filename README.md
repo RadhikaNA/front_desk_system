@@ -1,4 +1,3 @@
-```
 # Front Desk System (Demo)
 
 A minimal **Front Desk System** for a clinic, built with:
