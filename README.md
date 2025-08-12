@@ -86,9 +86,10 @@ npm run start:dev
 ### Doctor Management
 ![WhatsApp Image 2025-08-12 at 11 51 37 AM](https://github.com/user-attachments/assets/663aab0b-cb16-457e-a7b2-3c3aeb2ffc6c)
 
-### Queue Management
+### Queue Management 
 ![WhatsApp Image 2025-08-12 at 11 52 13 AM](https://github.com/user-attachments/assets/4d23368f-a3ba-43ba-8d1d-65277090e243)
 
+### Appointment  Management
 ![WhatsApp Image 2025-08-12 at 11 53 15 AM](https://github.com/user-attachments/assets/9d65ea91-02cf-494c-8603-1f85ea60b587)
 
 ![WhatsApp Image 2025-08-12 at 11 54 43 AM](https://github.com/user-attachments/assets/547bb3a3-f67b-4651-925a-0478e778d9e0)
@@ -97,6 +98,7 @@ npm run start:dev
 
 ![WhatsApp Image 2025-08-12 at 11 55 33 AM](https://github.com/user-attachments/assets/e271d88b-1aaf-4bed-a1f4-d1a79cf3be98)
 
+### Dashboard
 ![WhatsApp Image 2025-08-12 at 12 02 08 PM](https://github.com/user-attachments/assets/dc9128bc-063d-49ea-9f06-499c80ef544b)
 
 ![WhatsApp Image 2025-08-12 at 12 02 39 PM](https://github.com/user-attachments/assets/00f469b1-d228-47ed-9f65-1797ad10a5d0)
