@@ -106,10 +106,17 @@ Use Postman or the UI to interact with the system.
 ```
 Snapshots
 
-![Snapshot 3](https://github.com/user-attachments/assets/13f75aa1-a1e3-4979-bca5-1a5291ea94ab)
+![WhatsApp Image 2025-08-12 at 11 50 56 AM](https://github.com/user-attachments/assets/8485cd44-9e02-44e8-ad06-cef432b059a0)
 
-![Snapshot 2](https://github.com/user-attachments/assets/17000def-27b4-49ee-8377-40577d790fd6)
+![WhatsApp Image 2025-08-12 at 11 51 37 AM](https://github.com/user-attachments/assets/663aab0b-cb16-457e-a7b2-3c3aeb2ffc6c)
 
-![Snapshot 4](https://github.com/user-attachments/assets/2935ef16-e733-4552-b925-c8e2ec3b0a3c)
+![WhatsApp Image 2025-08-12 at 11 52 13 AM](https://github.com/user-attachments/assets/4d23368f-a3ba-43ba-8d1d-65277090e243)
 
-![Snapshot 1](https://github.com/user-attachments/assets/fd861ae0-5c0d-4417-857e-4fe0b0382dec)
+![WhatsApp Image 2025-08-12 at 11 53 15 AM](https://github.com/user-attachments/assets/9d65ea91-02cf-494c-8603-1f85ea60b587)
+
+![WhatsApp Image 2025-08-12 at 11 54 43 AM](https://github.com/user-attachments/assets/547bb3a3-f67b-4651-925a-0478e778d9e0)
+
+![WhatsApp Image 2025-08-12 at 11 54 57 AM](https://github.com/user-attachments/assets/fb984d0a-9c08-4cd1-9bb0-14c6e55fed29)
+
+![WhatsApp Image 2025-08-12 at 11 55 33 AM](https://github.com/user-attachments/assets/e271d88b-1aaf-4bed-a1f4-d1a79cf3be98)
+
