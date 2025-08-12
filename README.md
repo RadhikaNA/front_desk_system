@@ -1,102 +1,55 @@
-```markdown
-# Front Desk System (Demo)
-
-This archive contains a minimal Front Desk System for a clinic.
-
-**Structure**  
-- backend/ : NestJS + TypeORM server (minimal)  
-- frontend/: Next.js demo UI  
-- docker-compose.yml : run MySQL + backend + frontend quickly  
-
-## Quick start (using Docker)  
-1. Make sure Docker & Docker Compose are installed.  
-2. From the project root run:  
 ```
+## Running Backend & Frontend Separately Using XAMPP (No Docker)
 
-docker compose up --build
+1. **Download and extract** the project files to your preferred folder.  
 
-```
-This will:  
-- start MySQL (port 3306)  
-- build & start backend (port 3001)  
-- build & start frontend (port 3000)  
-3. Open http://localhost:3000 in your browser.
+2. **Open XAMPP Control Panel**  
+   - Start **Apache** and **MySQL** services.  
 
-## Quick start (manual setup)  
+3. **Create the database in phpMyAdmin**  
+   - Open your browser and go to: [http://localhost/phpmyadmin](http://localhost/phpmyadmin)  
+   - Click **Databases** in the top menu.  
+   - In the “Create database” field, enter **frontdesk** and click **Create**.  
+   - *(No need to create tables — the backend will create them automatically when it runs.)*  
 
-### Prerequisites  
-- Node.js (v16 or above)  
-- MySQL server running locally or remotely  
-- npm or yarn package manager  
+4. **Run the Backend**  
+   - Open **Windows PowerShell** or **Command Prompt**.  
+   - Navigate to the backend folder:  
+     ```
+     cd your_file_path\backend
+     ```
+   - Install dependencies:  
+     ```
+     npm install
+     ```
+   - Start the backend in development mode:  
+     ```
+     npm run start:dev
+     ```
 
-### Backend Setup  
-1. Navigate to the backend directory:  
-```
+5. **Run the Frontend**  
+   - Open a **new** PowerShell/Command Prompt window.  
+   - Navigate to the frontend folder:  
+     ```
+     cd your_file_path\frontend
+     ```
+   - Install dependencies:  
+     ```
+     npm install
+     ```
+   - Start the frontend:  
+     ```
+     npm run dev
+     ```
 
-cd backend
+6. **Open the application**  
+   - In your browser, go to [http://localhost:3000](http://localhost:3000) to access the frontend UI.  
+   - Backend API will run on [http://localhost:3001](http://localhost:3001).  
 
-```
-2. Install dependencies:  
-```
+7. **Login with default credentials**:  
+   - **Username:** admin  
+   - **Password:** password123
 
-npm install
-
-```
-3. Create a `.env` file in the backend directory with the following content (adjust as needed):  
-```
-
-JWT\_SECRET=your\_jwt\_secret\_key
-DB\_HOST=localhost
-DB\_PORT=3306
-DB\_USERNAME=your\_mysql\_username
-DB\_PASSWORD=your\_mysql\_password
-DB\_DATABASE=front\_desk\_db
-
-```
-4. Make sure the MySQL database (`front_desk_db`) exists or create it.  
-5. Start the backend server:  
-```
-
-npm run start\:dev
-
-```
-The backend will seed the default admin user and sample doctors on first run.
-
-### Frontend Setup  
-1. Navigate to the frontend directory:  
-```
-
-cd frontend
-
-```
-2. Install dependencies:  
-```
-
-npm install
-
-```
-3. Create a `.env.local` file in the frontend directory with:  
-```
-
-NEXT\_PUBLIC\_API\_URL=[http://localhost:3001](http://localhost:3001)
-
-```
-4. Start the frontend development server:  
-```
-
-npm run dev
-
-```
-5. Open your browser at [http://localhost:3000](http://localhost:3000)
-
----
-
-You can now log in using the seeded admin credentials:
-
-- **Username:** admin  
-- **Password:** password123
-
-Use Postman or the UI to interact with the system.
 
 ## Notes  
 - Backend seeds a default user: **username: admin**, **password: password123**.  
