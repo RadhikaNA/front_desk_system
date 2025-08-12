@@ -15,18 +15,8 @@ A minimal **Front Desk System** for a clinic, built with:
 
 1. **Download and extract** the project files to your computer.
 2. **Open XAMPP** and start **Apache** and **MySQL** services.
-3. Open **phpMyAdmin** in your browser:  
-```
-
-[http://localhost/phpmyadmin](http://localhost/phpmyadmin)
-
-```
-4. Create a new database named:
-```
-
-frontdesk
-
-````
+3. Open **phpMyAdmin** in your browser:  [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+4. Create a new database named: frontdesk
 *(No need to create tables — they will be generated automatically.)*
 5. Open **Windows PowerShell** or your **Terminal** and navigate to the backend folder:
 ```bash
