@@ -17,7 +17,7 @@ export class StaffService {
       if (cnt === 0) {
         await this.doctors.save(
           this.doctors.create({
-            name: 'Dr. Asha',
+            name: ' Asha',
             specialization: 'General',
             location: 'Floor 1',
             availability: ['09:00-12:00', '14:00-17:00'],
@@ -25,7 +25,7 @@ export class StaffService {
         );
         await this.doctors.save(
           this.doctors.create({
-            name: 'Dr. Rahul',
+            name: 'Rahul',
             specialization: 'Dermatology',
             location: 'Floor 2',
             availability: ['10:00-13:00'],
@@ -69,7 +69,6 @@ export class StaffService {
 
   // Appointments
   listAppointments() {
-    // Always return doctor details with appointments
     return this.appointments.find({
       relations: ['doctor'],
       order: { date: 'ASC', timeslot: 'ASC' },
@@ -77,35 +76,34 @@ export class StaffService {
   }
 
   async createAppointment(a: Partial<Appointment> & { doctorId?: number }) {
-  const doctorId = a.doctorId || a?.doctor?.id;
+    const doctorId = a.doctorId || a?.doctor?.id;
 
-  if (!doctorId) {
-    throw new BadRequestException('Doctor ID is required for appointment creation');
+    if (!doctorId) {
+      throw new BadRequestException('Doctor ID is required for appointment creation');
+    }
+    if (!a.date) {
+      throw new BadRequestException('Appointment date is required');
+    }
+    if (!a.timeslot) {
+      throw new BadRequestException('Appointment timeslot is required');
+    }
+
+    const doctorExists = await this.doctors.findOneBy({ id: doctorId });
+    if (!doctorExists) {
+      throw new NotFoundException(`Doctor with ID ${doctorId} not found`);
+    }
+
+    const appointment = this.appointments.create({
+      patientName: a.patientName,
+      phone: a.phone,
+      date: a.date,
+      timeslot: a.timeslot,
+      status: a.status || 'booked',
+      doctor: doctorExists,
+    });
+
+    return this.appointments.save(appointment);
   }
-  if (!a.date) {
-    throw new BadRequestException('Appointment date is required');
-  }
-  if (!a.timeslot) {
-    throw new BadRequestException('Appointment timeslot is required');
-  }
-
-  const doctorExists = await this.doctors.findOneBy({ id: doctorId });
-  if (!doctorExists) {
-    throw new NotFoundException(`Doctor with ID ${doctorId} not found`);
-  }
-
-  const appointment = this.appointments.create({
-    patientName: a.patientName,
-    phone: a.phone,
-    date: a.date,
-    timeslot: a.timeslot,
-    status: a.status || 'booked',
-    doctor: doctorExists, // assign Doctor entity object
-  });
-
-  return this.appointments.save(appointment);
-}
-
 
   async updateAppointment(id: number, a: Partial<Appointment>) {
     const appointment = await this.appointments.findOneBy({ id });
@@ -152,7 +150,20 @@ export class StaffService {
   }
 
   async updateQueue(id: number, q: Partial<QueueEntry>) {
+    const queueItem = await this.queueRepo.findOneBy({ id });
+    if (!queueItem) {
+      throw new NotFoundException(`Queue entry with ID ${id} not found`);
+    }
     await this.queueRepo.update(id, q);
     return this.queueRepo.findOne({ where: { id }, relations: ['doctor'] });
+  }
+
+  async deleteQueue(id: number) {
+    const queueItem = await this.queueRepo.findOneBy({ id });
+    if (!queueItem) {
+      throw new NotFoundException(`Queue entry with ID ${id} not found`);
+    }
+    await this.queueRepo.delete(id);
+    return { message: `Queue entry ${id} deleted successfully` };
   }
 }
