@@ -76,12 +76,7 @@ npm run start:dev
   ```
   http://localhost:3001
   ```
-
-## Notes  
-- Backend seeds a default user: **username: admin**, **password: password123**.  
-- Backend seeds two sample doctors.  
-- For quick API testing use Postman to call backend endpoints at http://localhost:3001  
-- The project is intentionally minimal to satisfy assignment requirements; extend it as needed.
+* The project is intentionally minimal to satisfy assignment requirements; extend it as needed.
 
 Snapshots
 
