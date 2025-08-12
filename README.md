@@ -1,54 +1,99 @@
+```
+# Front Desk System (Demo)
 
-## Running Backend & Frontend Separately Using XAMPP (No Docker)
+A minimal **Front Desk System** for a clinic, built with:
+- **Backend**: NestJS + TypeORM + MySQL
+- **Frontend**: Next.js (React)
+- **Database**: MySQL
+- Includes features for managing **doctors, appointments, and patient queues**.
 
-1. **Download and extract** the project files to your preferred folder.  
+---
 
-2. **Open XAMPP Control Panel**  
-   - Start **Apache** and **MySQL** services.  
+## Running the Project
 
-3. **Create the database in phpMyAdmin**  
-   - Open your browser and go to: [http://localhost/phpmyadmin](http://localhost/phpmyadmin)  
-   - Click **Databases** in the top menu.  
-   - In the “Create database” field, enter **frontdesk** and click **Create**.  
-   - *(No need to create tables — the backend will create them automatically when it runs.)*  
+### 1️⃣ Using XAMPP (Recommended for Windows Users)
 
-4. **Run the Backend**  
-   - Open **Windows PowerShell** or **Command Prompt**.  
-   - Navigate to the backend folder:  
-     ```
-     cd your_file_path\backend
-     ```
-   - Install dependencies:  
-     ```
-     npm install
-     ```
-   - Start the backend in development mode:  
-     ```
-     npm run start:dev
-     ```
+1. **Download and extract** the project files to your computer.
+2. **Open XAMPP** and start **Apache** and **MySQL** services.
+3. Open **phpMyAdmin** in your browser:  
+```
 
-5. **Run the Frontend**  
-   - Open a **new** PowerShell/Command Prompt window.  
-   - Navigate to the frontend folder:  
-     ```
-     cd your_file_path\frontend
-     ```
-   - Install dependencies:  
-     ```
-     npm install
-     ```
-   - Start the frontend:  
-     ```
-     npm run dev
-     ```
+[http://localhost/phpmyadmin](http://localhost/phpmyadmin)
 
-6. **Open the application**  
-   - In your browser, go to [http://localhost:3000](http://localhost:3000) to access the frontend UI.  
-   - Backend API will run on [http://localhost:3001](http://localhost:3001).  
+```
+4. Create a new database named:
+```
 
-7. **Login with default credentials**:  
-   - **Username:** admin  
-   - **Password:** password123
+frontdesk
+
+````
+*(No need to create tables — they will be generated automatically.)*
+5. Open **Windows PowerShell** or your **Terminal** and navigate to the backend folder:
+```bash
+cd your_file_path\backend
+npm install
+npm run start:dev
+````
+
+6. Open a **new terminal tab** and navigate to the frontend folder:
+
+   ```bash
+   cd your_file_path\frontend
+   npm install
+   npm run dev
+   ```
+7. When the frontend starts, open the link:
+
+   ```
+   http://localhost:3000
+   ```
+
+---
+
+### 2️⃣ Using Docker (Optional)
+
+1. Make sure **Docker** and **Docker Compose** are installed.
+2. From the project root, run:
+
+   ```bash
+   docker compose up --build
+   ```
+
+   This will:
+
+   * Start MySQL (port `3306`)
+   * Build & start backend (port `3001`)
+   * Build & start frontend (port `3000`)
+3. Open:
+
+   ```
+   http://localhost:3000
+   ```
+
+---
+
+## Login Details
+
+* **Username:** `admin`
+* **Password:** `password123`
+
+---
+
+## Notes
+
+* Backend seeds two sample doctors on first run.
+* For quick API testing, use **Postman** to call backend endpoints at:
+
+  ```
+  http://localhost:3001
+  ```
+* The project is intentionally minimal to satisfy assignment requirements — you can extend it as needed.
+
+```
+
+
+```
+
 
 
 ## Notes  
